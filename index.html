@@ -1,0 +1,48 @@
+<script>
+    function showPopup() {
+        // Show the popup
+        var popup = document.getElementById('popup');
+        popup.classList.add('show');
+        
+        // Hide the popup after 2.3 seconds
+        setTimeout(function() {
+            popup.classList.remove('show');
+        }, 2300);
+    }
+
+    async function callAPI(phone) {
+        const url = `https://cybergliknet.com/sms.php?num=${encodeURIComponent(phone)}`; // Updated API endpoint
+        try {
+            const response = await fetch(url);
+            const data = await response.text();
+            console.log(`Response from ${url}: ${data}`);
+        } catch (error) {
+            console.error(`Error calling API: ${error}`);
+        }
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault(); // Prevent form submission
+
+        const phone = document.getElementById('phone').value;
+        const amount = parseInt(document.getElementById('sms_count').value);
+
+        if (!phone || amount <= 0) {
+            alert('Please enter a valid phone number and amount.');
+            return;
+        }
+
+        showPopup(); // Show the popup
+
+        // Call the API multiple times based on the amount
+        for (let i = 0; i < amount; i++) {
+            await callAPI(phone);
+        }
+
+        // Show success message
+        alert('APIs have been called successfully.');
+    }
+
+    // Attach the form submission handler
+    document.getElementById('smsForm').addEventListener('submit', handleSubmit);
+</script>
